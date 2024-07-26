@@ -9,8 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <Content Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Personal Project.Client\Personal Project.Client.csproj" />
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0-preview.3" />
+    <PackageReference Include="BlazorInputFile" Version="0.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.5" />
+    <PackageReference Include="Syncfusion.Blazor.Charts" Version="26.1.38" />
+    <PackageReference Include="Syncfusion.Blazor.Grid" Version="26.1.35" />
+    <PackageReference Include="Syncfusion.Blazor.Inputs" Version="26.1.39" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="26.1.39" />
   </ItemGroup>
 
 </Project>

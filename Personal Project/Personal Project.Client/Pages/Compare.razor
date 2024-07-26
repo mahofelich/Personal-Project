@@ -1,0 +1,36 @@
+﻿@page "/compare"
+@inject StandData Stands
+@rendermode InteractiveAuto
+<br/>
+<br />
+<div>
+<select name="stand1" @bind="@Stand1">
+    @if (StandsList != null)
+    {
+        @foreach (var stand in StandsList)
+        {
+            <option value="@stand.ID">@stand.Name</option>
+        }
+    }
+</select>
+<select name="stand2" @bind="@Stand2">
+    @if (StandsList != null)
+    {
+        @foreach (var stand in StandsList)
+        {
+            <option value="@stand.ID">@stand.Name</option>
+        }
+    }
+    </select>
+</div>
+@code {
+    private int Stand1;
+    private int Stand2;
+    private StandDataTable[]? StandsList;
+    protected override async Task OnInitializedAsync()
+    {
+        StandsList = await Stands.GetStandsAsync();
+    }
+
+
+}

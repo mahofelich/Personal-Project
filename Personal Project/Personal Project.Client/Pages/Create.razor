@@ -1,0 +1,273 @@
+﻿@page "/createstand"
+@page "/editstand/{id:int}"
+@inject StandData Stands
+@inject NavigationManager Navigation
+
+@using System.IO
+@using System.Threading.Tasks
+<br />
+<PageTitle>@title</PageTitle>
+
+<h3 style="font-size: 35px; text-align: center; margin-top: 30px;"><strong>@title</strong></h3>
+
+<div class="container" style="margin-top: 50px;">
+    <div class="row">
+        <div class="col-md-6">
+
+            <div style="padding: 75px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 5px;">
+                @if (ImageDataUrl == null)
+                {
+                    <div>
+                        <h4 style="font-size: 20px; text-align: center;">Upload Image</h4>
+                        <SfUploader AllowMultiple="false" ID="UploadFiles">
+                            <UploaderEvents ValueChange="OnChange"></UploaderEvents>
+                        </SfUploader>
+                        <div style="text-align: center; margin-top: 20px;">
+                            @if (SubmitSwitch)
+                            {
+                                <Button class="btn btn-primary" @onclick="OnSubmit">Submit</Button>
+                            }
+                            else
+                            {
+                                <Button Disabled="@(ImageDataUrl==null)" class="btn btn-primary" @onclick="OnSubmit">Submit</Button>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    
+                    <img src="@ImageDataUrl" alt="@($"{stand.Name}.png")" style="margin-top: 20px; width: 100%; max-width: 500px; height: auto; border: 5px solid black; border-radius: 10px;" />
+                    <div style="text-align: center; margin-top: 10px;">
+                        <button class="btn btn-primary" @onclick="ChangeImage">Change Image</button>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div style="padding: 20px; background-color: #f0f0f0; border: 1px solid #ccc; border-radius: 5px;">
+                @if (stand != null)
+                {
+                    <EditForm Model="@stand" FormName="inputstand" OnValidSubmit="HandleSubmitAsync">
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Name:</label>
+                            <InputText id="Stand Name" class="form-control" @bind-Value="stand.Name" />
+                            <ValidationMessage For="()=>stand.Name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Power:</label>
+                            <InputSelect id="Power" class="form-control" @bind-Value="stand.Power">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Power" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Speed:</label>
+                            <InputSelect id="Speed" class="form-control" @bind-Value="stand.Speed">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Speed" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Range:</label>
+                            <InputSelect id="Range" class="form-control" @bind-Value="stand.Range">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Range" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Persistence:</label>
+                            <InputSelect id="Persistence" class="form-control" @bind-Value="stand.Persistence">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Persistence" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Precision:</label>
+                            <InputSelect id="Precision" class="form-control" @bind-Value="stand.Precision">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Precision" />
+                        </div>
+
+                        <div class="form-group">
+                            <label style="font-size: 20px;">Potential:</label>
+                            <InputSelect id="Potential" class="form-control" @bind-Value="stand.Potential">
+                                <option value="?">?</option>
+                                <option value="A">Rank A</option>
+                                <option value="B">Rank B</option>
+                                <option value="C">Rank C</option>
+                                <option value="D">Rank D</option>
+                                <option value="E">Rank E</option>
+                            </InputSelect>
+                            <ValidationMessage For="()=>stand.Potential" />
+                        </div>
+
+                        <div style="text-align: center;">
+                            <button type="submit" class="btn btn-primary" style="margin-top:10px;">Submit</button>
+                            <button type="button" class="btn btn-primary" style="margin-left: 10px;margin-top:10px;" @onclick="@(()=>Navigation.NavigateTo(""))">Back</button>
+
+                            @if (EditMode)
+                            {
+                                <button type="button" class="btn btn-danger" style="margin-left: 10px;margin-top:10px;" @onclick="RemoveStandAsync">DELETE</button>
+                            }
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    public bool EditMode = false;
+
+    [SupplyParameterFromForm]
+    private StandDataTable? stand { get; set; }
+
+    private string title = String.Empty;
+    public bool Image;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(stand is not null)
+        {
+            if (stand.Img is not null)
+            {
+                Image = true;
+                var base64Img = Convert.ToBase64String(stand.Img);
+                ImageDataUrl = $"data:image/png;base64,{base64Img}";
+            }
+            else
+            {
+                Image = false;
+            }
+
+            return;
+        }
+        if(id is not null)
+        {
+            stand = await Stands.StandDataRetrieveAsync(id.Value);
+            title = $"Edit {stand.Name}";
+            EditMode = true;
+            if(stand.Img is not null)
+            {
+                Image = true;
+                var base64Img = Convert.ToBase64String(stand.Img);
+                ImageDataUrl = $"data:image/png;base64,{base64Img}";
+            }
+            else
+            {
+                Image = false;
+            }
+
+        }
+        else
+        {
+            stand = new()
+                {
+                    Name = string.Empty
+                };
+            title = "Create New Stand";
+        }
+    }
+    private async Task RemoveStandAsync()
+    {
+        await Stands.DeleteStandAsync(stand.ID);
+        Navigation.NavigateTo("");
+    }
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(stand);
+        if(id is null)
+        {
+            await Stands.AddStandAsync(stand);
+
+        }
+        else
+        {
+            await Stands.UpdateStandAsync(stand);
+        }
+        Navigation.NavigateTo("");
+    }
+
+
+
+
+
+
+
+    //image handling
+
+    private string? ImageDataUrl;
+    private bool SubmitSwitch = false;
+
+    private async Task OnChange(UploadChangeEventArgs args)
+    {
+        SubmitSwitch = true;
+        try
+        {
+            foreach (var file in args.Files)
+            {
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.File.OpenReadStream(long.MaxValue).CopyToAsync(memoryStream);
+                    stand.Img = memoryStream.ToArray(); 
+
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void OnSubmit()
+    {
+        var base64Img = Convert.ToBase64String(stand.Img);
+        ImageDataUrl = $"data:image/png;base64,{base64Img}";
+    }
+
+    private void ChangeImage()
+    {
+        ImageDataUrl = null;
+    }
+}

@@ -1,0 +1,139 @@
+﻿@page "/standpage/{ID:int}"
+@inject StandData Stands
+@using Syncfusion.Blazor.Charts
+
+
+<br/>
+<br/>
+<style>
+    .wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .content {
+        padding: 20px;
+        position: relative; 
+        z-index: 9; 
+    }
+
+    .sidebar {
+        width: 280px;
+        background-color: #f0f0f0;
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        overflow-y: auto;
+       
+    }
+
+    .sidebar-content {
+        padding: 20px; 
+    }
+
+    }
+</style>
+
+<div class="wrapper">
+    <div class="content">
+        
+        <h3 style="font-size: 100px; text-align: center; margin-top: 50px; margin-right: 100px;">
+            @(stand != null ? stand.Name : "Stand Name Not Found")
+        </h3>
+    </div>
+
+   
+    <div class="sidebar">
+        <div class="sidebar-content">
+          
+            @if (stand != null)
+            {
+                <img src="@($"data:image/png;base64,{Convert.ToBase64String(stand.Img)}")"
+                     alt="@($"{stand.Name}.png")" />
+            }
+            <SfChart>
+                <ChartPrimaryXAxis Coefficient="100" ValueType="Syncfusion.Blazor.Charts.ValueType.Category" LabelPlacement="LabelPlacement.OnTicks">
+                </ChartPrimaryXAxis>
+                <ChartPrimaryYAxis IsInversed LabelFormat="" Minimum="65" Maximum="69" Interval="1">
+                </ChartPrimaryYAxis>
+                <ChartEvents OnAxisLabelRender="LabelRender"></ChartEvents>
+
+
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="@StandDataSet" XName="X" YName="Y"
+                                 Type="ChartSeriesType.Radar" DrawType="ChartDrawType.Line">
+                    </ChartSeries>
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int? ID { get; set; }
+
+    string[] stringarr = new string[] { "A", "B", "C", "D", "E" };
+    private int count = 0;
+    List<ChartData> StandDataSet = new List<ChartData>();
+
+    StandDataTable? stand;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(ID.HasValue)
+        {
+            stand = await Stands.StandDataRetrieveAsync(ID.Value);
+        }
+        InitializeDataSet();
+    }
+    public void LabelRender(AxisLabelRenderEventArgs args)
+    {
+        
+
+        if (count > 4)
+        {
+            count = 0;
+        }
+        else if (args.Axis.Name == "PrimaryYAxis")
+        {
+            args.Text = stringarr[count];
+            count++;
+        }
+    }
+    public class ChartData
+    {
+        public required string X { get; set; }
+        public int Y { get; set; }
+
+
+    }
+    private void InitializeDataSet()
+    {
+        StandDataSet = new List<ChartData>
+        {
+        new ChartData{ X="Power" , Y= (int)stand.Power},
+        new ChartData{ X= "Speed", Y= (int)stand.Speed},
+        new ChartData{ X= "Range", Y= (int)stand.Range},
+        new ChartData{ X= "Persistence", Y= (int)stand.Persistence},
+        new ChartData{ X= "Precision", Y= (int)stand.Precision},
+        new ChartData{ X= "Potential", Y= (int)stand.Potential},
+
+        };
+    }
+
+    
+
+
+    
+  
+}
